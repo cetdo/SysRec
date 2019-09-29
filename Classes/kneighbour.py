@@ -22,12 +22,20 @@ def eucledean(person1, person2):
 
     return a
 
-def getNearests(patients, new_patient, k):
+def getDistance(patients, new_patient):
     aux = {}
     for name in patients:
         aux[name]= eucledean(patients[name],new_patient["Joao"])
     return aux
 
-print(getNearests(patients, new_patient, 3))
+def getNearests(patients, new_patient, k):
+    distances = getDistance(patients, new_patient)
 
-#print(eucledean(patients["Jose"],patients["Isabel"]))
+
+
+
+
+#print(getDistance(patients, new_patient))
+test = getDistance(patients, new_patient)
+
+print(len(test))
