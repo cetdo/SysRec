@@ -1,33 +1,32 @@
 import csv, random
 
-
 def indexing():
-    with open('users.csv', 'r') as readFile:
-        reader = csv.reader(readFile)
-        lines = list(reader)
-        for index in range(10001):
-            if index > 0:
-                lines[index][0] = index
+    with open('users.csv', 'r') as readFile: #abre o arquivo como um arquivo tipo texto
+        reader = csv.reader(readFile) #digo que é um csv
+        lines = list(reader) # coloco cada linha do arquivo em um vetor (essencialmente vira uma matriz)
+        for index in range(10001): # percorro todas as linhas do arquivo
+            if index > 0:   # garantindo que não vou modificar a primeira linha que contém o nome dos campos
+                lines[index][0] = index # cria um índice único para cada usuário e coloca na primeira coluna do csv
     
-    with open('users.csv', 'w') as writeFile:
-        writer = csv.writer(writeFile)
-        writer.writerows(lines)
-    readFile.close()
-    writeFile.close()
-    return lines
+    with open('users.csv', 'w') as writeFile: # abre o arquivo no modo escrita
+        writer = csv.writer(writeFile) # diz que o arquivo aberto é um arquivo csv para escrita
+        writer.writerows(lines) # sobrescreve as linhas do arquivo
+    readFile.close() # fecha o arquivo em modo leitura
+    writeFile.close() # fecha o arquivo no modo escrita
+    return index # retorna a matriz com os dados do csv
 
 def rating():
     with open('users.csv', 'r') as readFile:
         reader = csv.reader(readFile)
         lines = list(reader)
-        watched = [True, False]
+        watched = [True, False] # vetor com 2 opções que vai ser utilizado para decidir se o usuario viu ou não o show
         for index in range(10001):
             if index > 0:
                 for show in range(10):
-                    if(random.choice(watched)):
-                        lines[index][show+3] = random.randint(0,100)
+                    if(random.choice(watched)): # escolhe aleatoriamente se o usuario viu ou não o show
+                        lines[index][show+3] = random.randint(0,100) # diz quanto do show o usuario viu
                     else:
-                        lines[index][show+3] = 0
+                        lines[index][show+3] = 0 # se ele não viu o show zera o valor
     
     with open('users.csv', 'w') as writeFile:
         writer = csv.writer(writeFile)
@@ -35,24 +34,9 @@ def rating():
     readFile.close()
     writeFile.close()
 
-def readingAsDictonary():
-    with open('users.csv', mode='r') as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=',')
-        line_count = 0
-        for row in csv_reader:
-            if line_count == 0:
-                print(f'Column names are {", ".join(row)}')
-                line_count +=1
-            print(f'\t{row["name"]}, {row["sex"]}')
-            line_count += 1
-        print(f'Processed {line_count} lines.')
-
-        csv_file.close()
-    return csv_reader
-
 def main():
     users = indexing()
     rating()
-    print(users[1])
+    print(f'{users - 1} foram processados')
 
 main()
