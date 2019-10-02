@@ -24,9 +24,9 @@ def rating():
             if index > 0:
                 for show in range(10):
                     if(random.choice(watched)): # escolhe aleatoriamente se o usuario viu ou não o show
-                        lines[index][show+3] = random.randint(0,100) # diz quanto do show o usuario viu
+                        lines[index][show+2] = random.randint(0,100) # diz quanto do show o usuario viu
                     else:
-                        lines[index][show+3] = 0 # se ele não viu o show zera o valor
+                        lines[index][show+2] = 0 # se ele não viu o show zera o valor
     
     with open('users.csv', 'w') as writeFile:
         writer = csv.writer(writeFile)
