@@ -129,7 +129,8 @@ def getNeighbours(id, k, users):
             if (len(neighbours) < k):
                 neighbours.append(user)
             else:
-                
+                for i in len(neighbours):
+                    if (neighbours[i])
 
 def debug():
     users = getUsers('users.csv')
