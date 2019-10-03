@@ -96,8 +96,6 @@ def getCosine(user1, user2):
     else:
         ret = -1
 
-
-
     return ret
 
 def debug():
