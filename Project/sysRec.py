@@ -1,6 +1,8 @@
 import csv
 import math
 import random
+from operator import itemgetter
+#from sortedcontainers import SortedDict
 
 class User(object):  # cria a classe usuário
     def __init__(self, id, name, ratings):  # define o construtor da classe usuário
@@ -118,19 +120,18 @@ def getCosine(user1, user2):
         ret = -1
     return ret
 
+
 def getNeighbours(id, k, users):
-    neighbours = []
+    neighbours = {}
     usr = searchUser(id,users)
 
     for user in users:
         if (id != user.id):
             sim = getCosine(usr, user)
-            
-            if (len(neighbours) < k):
-                neighbours.append(user)
-            else:
-                for i in len(neighbours):
-                    if (neighbours[i])
+            sims = Similarity(usr.id,user.id,'Cosseno',sim)
+            neighbours[user.id] = sim
+    
+    return neighbours
 
 def debug():
     users = getUsers('users.csv')
@@ -142,7 +143,7 @@ def debug():
 
     #for s in sims:
     #    print(s.getSim())
-    print(searchUser(random.randint(0,9999),users).print())
+    #print(searchUser(random.randint(0,9999),users).print())
     #print(searchUser(51834,users))
 
     #user3 = User('01', 'Cadu', [4.75, 4.5, 5, 4.25, 4])
@@ -150,6 +151,12 @@ def debug():
     #sim = Similarity(user3.id, user4.id, 'Cossenos', getCosine(user3, user4))
 
     # print(sim.getSim())
+
+    n = getNeighbours(9574,5,users)
+    #sort = SortedDict(n)
+    n = sorted(n.items(), reverse=True, key=lambda x : x[1])
+    for i in range(5):
+        print(n[i])
 
 
 debug()
