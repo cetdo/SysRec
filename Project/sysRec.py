@@ -1,6 +1,6 @@
 import csv
 import math
-
+import random
 
 class User(object):  # cria a classe usuário
     def __init__(self, id, name, ratings):  # define o construtor da classe usuário
@@ -12,7 +12,7 @@ class User(object):  # cria a classe usuário
         return self.ratings
 
     def print(self):  # imprime os dados do usuário
-        print(f'ID: {self.id} Nome: {self.name} Avaliações: {self.ratings}')
+        return(f'ID: {self.id} Nome: {self.name} Avaliações: {self.ratings}')
 
 
 class Similarity(object):
@@ -33,7 +33,7 @@ def getUsers(fileName):  # função para recurepar os dados do .csv e colocar nu
         reader = csv.reader(usersFile)
         # transcreve todas as linhas o csv pra um vetor separando os campos diferentes
         lines = list(reader)
-        for line in range(1, 10001):  # for que percorre todo o csv menos o cabeçalho
+        for line in range(1, len(lines)):  # for que percorre todo o csv menos o cabeçalho
             a = []  # variável auxiliar que vai receber os usuarios instanciados
             # pega todas as classificações (colunas de 3 a 12) e coloca num vetor
             for i in range(2, 12):
@@ -45,7 +45,29 @@ def getUsers(fileName):  # função para recurepar os dados do .csv e colocar nu
 
     return users  # retorna um vetor de usuários instanciados e suas avalizações
 
+def searchUser(id, users):
+    first = 0;
+    last = len(users)
+    middle = 0
+    found = False
+    
+    while (first <= last and found != True):
+        middle = (math.ceil((first + last)/2))
+        uID = users[middle].id
 
+        if(uID == id):
+            found = True
+
+        elif(id < uID):
+            last = middle - 1
+        
+        else:
+            first = middle + 1
+
+    if (found):
+        return users[middle]
+    else:
+        return False
 
 def getPearson(user1, user2):
     sumXY = 0
@@ -76,7 +98,6 @@ def getPearson(user1, user2):
     return (over/under)
 
 
-
 def getCosine(user1, user2):
     sumXY = 0
     sumX2 = 0
@@ -86,8 +107,8 @@ def getCosine(user1, user2):
 
     for i in range(len(x)):
         sumXY += x[i]*y[i]
-        sumX2 += math.pow(x[i],2)
-        sumY2 += math.pow(y[i],2)
+        sumX2 += math.pow(x[i], 2)
+        sumY2 += math.pow(y[i], 2)
 
     ret = math.sqrt(sumX2)*math.sqrt(sumY2)
 
@@ -95,26 +116,39 @@ def getCosine(user1, user2):
         ret = (sumXY/(math.sqrt(sumX2)*math.sqrt(sumY2)))
     else:
         ret = -1
-
     return ret
+
+def getNeighbours(id, k, users):
+    neighbours = []
+    usr = searchUser(id,users)
+
+    for user in users:
+        if (id != user.id):
+            sim = getCosine(usr, user)
+            
+            if (len(neighbours) < k):
+                neighbours.append(user)
+            else:
+                
 
 def debug():
     users = getUsers('users.csv')
-    sims = []
-    user = users[0]
-    for i in range(1,len(users)):
-        simi = getCosine(user, users[i])
-        sims.append(Similarity('1',users[i].id,'Cosseno',simi))
+    #sims = []
+    #user = users[0]
+    #for i in range(1, len(users)):
+    #    simi = getCosine(user, users[i])
+    #    sims.append(Similarity('1', users[i].id, 'Cosseno', simi))
 
-    for s in sims:
-        print(s.getSim())
+    #for s in sims:
+    #    print(s.getSim())
+    print(searchUser(random.randint(0,9999),users).print())
+    #print(searchUser(51834,users))
 
     #user3 = User('01', 'Cadu', [4.75, 4.5, 5, 4.25, 4])
     #user4 = User('02', 'Gabe', [4, 3, 5, 2, 1])
     #sim = Similarity(user3.id, user4.id, 'Cossenos', getCosine(user3, user4))
 
-    #print(sim.getSim())
+    # print(sim.getSim())
 
 
 debug()
-
