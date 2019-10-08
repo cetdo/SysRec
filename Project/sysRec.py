@@ -1,7 +1,6 @@
 import csv
 import math
-import random
-from operator import itemgetter
+
 #from sortedcontainers import SortedDict
 
 
@@ -74,35 +73,6 @@ def searchUser(id, users):
         return False
 
 
-def getPearson(user1, user2):
-    sumXY = 0
-    sumX = 0
-    sumY = 0
-    sumX2 = 0
-    sumY2 = 0
-
-    x = user1.getRatings()
-    y = user2.getRatings()
-
-    n = len(x)
-
-    for i in range(n):
-        sumXY += x[i] * y[i]
-        sumX += x[i]
-        sumY += y[i]
-        sumX2 += math.pow(x[i], 2)
-        sumY2 += math.pow(y[i], 2)
-
-    over = sumXY - ((sumX*sumY)/n)
-
-    under1 = math.sqrt(sumX2-(math.pow(sumX, 2)/n))
-    under2 = math.sqrt(sumY2-(math.pow(sumY, 2)/n))
-
-    under = under1 * under2
-
-    return (over/under)
-
-
 def getCosine(user1, user2):
     sumXY = 0
     sumX2 = 0
@@ -160,30 +130,8 @@ def recommend(id, users, k):
 
     return recommendation
 
-def debug():
-    users = getUsers('users.csv')
-    #sims = []
-    #user = users[0]
-    # for i in range(1, len(users)):
-    #    simi = getCosine(user, users[i])
-    #    sims.append(Similarity('1', users[i].id, 'Cosseno', simi))
+def main():
 
-    # for s in sims:
-    #    print(s.getSim())
-    # print(searchUser(random.randint(0,9999),users).print())
-    # print(searchUser(51834,users))
-
-    #user3 = User('01', 'Cadu', [4.75, 4.5, 5, 4.25, 4])
-    #user4 = User('02', 'Gabe', [4, 3, 5, 2, 1])
-    #sim = Similarity(user3.id, user4.id, 'Cossenos', getCosine(user3, user4))
-
-    # print(sim.getSim())
-
-    #n = getNeighbours(9574, 5, users)
-    #sort = SortedDict(n)
-    #print(searchUser(9574, users).ratings)
-    #for a in n:
-    #   print(a.ratings)
     users = getUsers('users.csv')
     print('Digite o ID de um usuário para realizar uma recomendação: ')
     uid = int(input())
@@ -195,4 +143,4 @@ def debug():
     print(f'Para o usuario {u.name} são: {rec}')
 
     
-debug()
+main()
