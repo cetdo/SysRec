@@ -25,6 +25,7 @@ class Anime(object):
         self.name = name
         self.genre = genre
         self.media = media
+        self.episodes = episodes
         self.rating = rating
         self.views = views
 
@@ -149,7 +150,7 @@ def searchAnime(id, animes):
 
 def wightedAverage(anime1, anime2):
 
-    totWeight = (5 + 5 + 1 + 3 + 3)
+    totWeight = (5 + 5 + 1 + 1 + 3 + 3)
     acmSim = 0
 
     if (re.search(anime1.name, anime2.name, re.IGNORECASE) or re.search(anime2.name, anime1.name, re.IGNORECASE)):
@@ -157,9 +158,9 @@ def wightedAverage(anime1, anime2):
     else:
         acmSim += fuzz.token_sort_ratio(anime1.name, anime2.name) * 5
 
-    
     acmSim += fuzz.token_sort_ratio(anime1.genre, anime2.genre) * 5
     acmSim += fuzz.token_sort_ratio(anime1.media, anime2.media) * 1
+    acmSim == fuzz.token_sort_ratio(anime1.episodes, anime2.episodes) * 1
     acmSim += fuzz.token_sort_ratio(anime1.rating, anime2.rating) * 3
     acmSim += fuzz.token_sort_ratio(anime1.views, anime2.views) * 3
 
@@ -211,10 +212,12 @@ def main():
     aid = int(input())
     print("Digite um valor para K para encontrar os vizinhos mais próximos: ")
     k = int(input())
-    a = searchAnime(aid,animes)
+    a = searchAnime(aid, animes)
     rec = getNeighbours(aid, k, animes)
-    print(f'Com base no anime {a.name} que contém os gêneros {a.genre} os {k} animes recomendados são: ')
+    print(
+        f'Com base no anime {a.name} que contém os gêneros {a.genre} os {k} animes recomendados são: ')
     for r in rec:
         print(r.print())
-        
+
+
 main()
