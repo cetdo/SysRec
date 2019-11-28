@@ -1,5 +1,6 @@
 import csv
 import math
+from fuzzywuzzy import fuzz
 
 #from sortedcontainers import SortedDict
 
@@ -16,6 +17,17 @@ class User(object):  # cria a classe usuário
     def print(self):  # imprime os dados do usuário
         return(f'ID: {self.id} || Nome: {self.name} || Avaliações: {self.ratings}')
 
+class Anime(object):
+    def __init__(self, id, name, genre, media, episodes, rating, views):
+        self.id = int(id)
+        self.name = name
+        self.genre = genre
+        self.media = media
+        self.rating = rating
+        self.views = views
+
+    def print(self):
+        return(f'ID: {self.id} || Nome: {self.name} || Gêneros: {self.genre}')
 
 class Similarity(object):
     def __init__(self, id1, id2, category, sim):
@@ -47,6 +59,17 @@ def getUsers(fileName):  # função para recurepar os dados do .csv e colocar nu
 
     return users  # retorna um vetor de usuários instanciados e suas avalizações
 
+def getAnimes(fileName):
+    animes = []
+    with open(fileName, 'r') as animeFile:
+        reader = csv.reader(animeFile)
+
+        lines = list(reader)
+        for line in lines:
+            animes.append(Anime(line[0],line[1], line[2], line[3], line[4], line[5], line[6]))
+            
+
+    return animes
 
 def searchUser(id, users):
     first = 0
@@ -93,22 +116,58 @@ def getCosine(user1, user2):
         ret = -1
     return ret
 
+def searchAnime(id, animes):
+    first = 0
+    last = len(animes)
+    middle = 0
+    found = False
 
-def getNeighbours(id, k, users):
+    while (first <= last and found != True):
+        middle = (math.ceil((first + last)/2))
+        aID = animes[middle].id
+
+        if(aID == id):
+            found = True
+
+        elif(id < aID):
+            last = middle - 1
+
+        else:
+            first = middle + 1
+
+    if (found):
+        return animes[middle]
+    else:
+      return False
+
+def wightedAverage(anime1, anime2):
+
+    
+    totWeight = (3 + 5 + 1 + 3 + 3)
+    acmSim = 0
+    acmSim += fuzz.token_sort_ratio(anime1.name, anime2.name) * 3
+    acmSim += fuzz.token_sort_ratio(anime1.genre, anime2.genre) * 5
+    acmSim += fuzz.token_sort_ratio(anime1.media, anime2.media) * 1
+    acmSim += fuzz.token_sort_ratio(anime1.rating, anime2.rating) * 3
+    acmSim += fuzz.token_sort_ratio(anime1.views, anime2.views) * 3
+
+    return (acmSim / totWeight * 1.0)
+
+def getNeighbours(id, k, animes):
     neighbours = {}
     neig = []
-    usr = searchUser(id, users)
+    ani = searchAnime(id, animes)
 
-    for user in users:
-        if (id != user.id):
-            sim = getCosine(usr, user)
+    for anime in animes:
+        if (id != anime.id):
+            sim = wightedAverage(ani, anime)
             #sims = Similarity(usr.id,user.id,'Cosseno',sim)
-            neighbours[user.id] = sim
+            neighbours[anime.id] = sim
 
     n = sorted(neighbours.items(), reverse=True, key=lambda x: x[1])
 
     for a in range(k):
-        neig.append(searchUser(int(n[a][0]), users))
+        neig.append(searchAnime(int(n[a][0]), animes))
 
     return neig
 
@@ -132,15 +191,31 @@ def recommend(id, users, k):
 
 def main():
 
-    users = getUsers('users.csv')
+    '''users = getUsers('users.csv')
     print('Digite o ID de um usuário para realizar uma recomendação: ')
     uid = int(input())
-    print('Digite um valor para K para enconrar os vizinhos mais próximos: ')
+    print('Digite um valor para K para encontrar os vizinhos mais próximos: ')
     k = int(input())
     u = searchUser(uid,users)
     rec = recommend(uid, users, k)
 
-    print(f'Para o usuario {u.name} são: {rec}')
+    print(f'Para o usuario {u.name} são: {rec}')'''
 
-    
+
+    animes = getAnimes('anime.csv')
+
+    print("Digite o ID de um anime para realizar a recomendação: ")
+    aid = int(input())
+    print("Digite um valor para K para encontrar os vizinhos mais próximos: ")
+    k = int(input())
+    ## a = searchAnime(aid, animes)
+    rec = getNeighbours(aid, k, animes)
+    for r in rec:
+        print(r.print())
+
+    """a1 = searchAnime(1, animes)
+    a2 = searchAnime(5, animes)
+
+    print(wightedAverage(a1,a2))
+"""
 main()
