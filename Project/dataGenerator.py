@@ -1,5 +1,7 @@
 import csv, random
 
+generos = ["4-koma", "action", "adult", "adventure", "comedy", "demons", "doujinshi", "drama", "ecchi", "fantasy", "food", "gender bender", "harem", "historical", "horror", "isekai", "josei", "kids", "magic", "martial arts", "mature", "mecha", "music", "one shot", "police", "parody", "school", "scifi", "shoujo", "sounen", "yaoi", "yuri", "vampire"]
+
 def indexing():
     with open('users.csv', 'r') as readFile: #abre o arquivo como um arquivo tipo texto
         reader = csv.reader(readFile) #digo que é um csv
@@ -18,16 +20,18 @@ def indexing():
 def rating():
     with open('users.csv', 'r') as readFile:
         reader = csv.reader(readFile)
+        aux = {}
         lines = list(reader)
         watched = [True, False] # vetor com 2 opções que vai ser utilizado para decidir se o usuario viu ou não o show
         for index in range(1,len(lines)):
             if index > 0:
                 for show in range(10):
                     if(random.choice(watched)): # escolhe aleatoriamente se o usuario viu ou não o show
-                        lines[index][show+2] = random.randint(1,100) # diz quanto do show o usuario viu
+                        qtd = random.randint(1,100)
+                        aux[show] = (random.randint(1970,2019), (generos[random.randint(0,32)])), qtd # diz qual o ano do show, mais o genero, e quanto do show o usuario viu. 
+                        lines[index][show+2] = aux[show] 
                     else:
                         lines[index][show+2] = 0 # se ele não viu o show zera o valor
-    
     with open('users.csv', 'w') as writeFile:
         writer = csv.writer(writeFile)
         writer.writerows(lines)
